@@ -1,6 +1,9 @@
+import { ClerkProvider, Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs"
+import { shadcn } from "@clerk/ui/themes"
 import { Geist, Geist_Mono } from "next/font/google"
 
 import "./globals.css"
+import { Button } from "@/components/ui/button"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toast"
 import { TooltipProvider } from "@/components/ui/tooltip"
@@ -25,11 +28,28 @@ export default function RootLayout({
       className={cn("antialiased", fontMono.variable, "font-sans", geist.variable)}
     >
       <body>
-        <ThemeProvider>
-          <TooltipProvider>
-            <Toaster>{children}</Toaster>
-          </TooltipProvider>
-        </ThemeProvider>
+        <ClerkProvider appearance={{ theme: shadcn }}>
+          <ThemeProvider>
+            <TooltipProvider>
+              <Toaster>
+                <header className="flex h-16 items-center justify-end gap-2 p-4">
+                  <Show when="signed-out">
+                    <SignInButton>
+                      <Button variant="ghost">Sign in</Button>
+                    </SignInButton>
+                    <SignUpButton>
+                      <Button>Sign up</Button>
+                    </SignUpButton>
+                  </Show>
+                  <Show when="signed-in">
+                    <UserButton />
+                  </Show>
+                </header>
+                {children}
+              </Toaster>
+            </TooltipProvider>
+          </ThemeProvider>
+        </ClerkProvider>
       </body>
     </html>
   )
